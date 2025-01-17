@@ -10,5 +10,5 @@ COPY start.sh /app/start.sh
 # Nadanie uprawnień do wykonywania skryptu
 RUN chmod +x /app/start.sh
 
-# Uruchomienie skryptu przez sh
-CMD ["sh", "/app/start.sh"]
+# Nadpisanie ENTRYPOINT, aby uruchomić nasz skrypt
+ENTRYPOINT ["/bin/sh", "/app/start.sh"]
