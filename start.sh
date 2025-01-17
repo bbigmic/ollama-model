@@ -8,17 +8,15 @@ echo "⏳ Czekam na uruchomienie Ollama..."
 sleep 5  # Czekamy chwilę, aby serwer się poprawnie uruchomił
 
 echo "🔍 Sprawdzam dostępne modele..."
-ollama list || echo "⚠️ Błąd: Nie można pobrać listy modeli"
+AVAILABLE_MODELS=$(ollama list | grep "mistral" || true)
 
-echo "⬇️ Pobieram model mistral..."
-until ollama pull mistral; do
-  echo "❌ Nie udało się pobrać modelu. Ponawiam próbę za 5 sekund..."
-  sleep 5
-done
-
-echo "✅ Model pobrany, oto lista dostępnych modeli:"
-ollama list
+if [ -z "$AVAILABLE_MODELS" ]; then
+  echo "⬇️ Model 'mistral' nie jest dostępny. Pobieram..."
+  ollama pull mistral
+else
+  echo "✅ Model 'mistral' już jest pobrany."
+fi
 
 echo "🎯 Restartuję serwer Ollama..."
-killall ollama  # Wyłączamy Ollama uruchomionego w tle
+killall ollama || true  # Wyłączamy Ollama uruchomionego w tle, jeśli istnieje
 exec ollama serve  # Restartujemy Ollama na pierwszym planie
