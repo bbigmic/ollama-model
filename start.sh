@@ -1,24 +1,20 @@
 #!/bin/sh
 set -e  # Zatrzymuje skrypt, jeśli coś pójdzie nie tak
 
-echo "🚀 Sprawdzam, czy Ollama już działa..."
+echo "🚀 Sprawdzam, czy serwer Ollama już działa..."
 if pgrep -x "ollama" > /dev/null; then
-  echo "⚠️ Ollama już działa. Nie uruchamiam ponownie."
-else
-  echo "🚀 Uruchamiam serwer Ollama w tle..."
-  ollama serve &  # Startujemy serwer w tle
-  sleep 5  # Czekamy chwilę, aby serwer się poprawnie uruchomił
+    echo "⚠️ Ollama już działa. Zatrzymuję..."
+    killall ollama || true
+    sleep 2
 fi
 
-echo "🔍 Sprawdzam dostępność modelu 'mistral'..."
-if [ ! -f ~/.ollama_mistral_downloaded ]; then
-  echo "⬇️ Model 'mistral' nie był wcześniej pobrany. Pobieram..."
-  ollama pull mistral
-  touch ~/.ollama_mistral_downloaded  # Tworzymy plik flagowy
-  echo "✅ Model 'mistral' został pobrany i zapisany w systemie."
+echo "🔍 Sprawdzam dostępne modele..."
+if ! ollama list | grep -q "mistral"; then
+    echo "⬇️ Model 'mistral' nie jest dostępny. Pobieram..."
+    ollama pull mistral
 else
-  echo "✅ Model 'mistral' był już wcześniej pobrany. Pomijam pobieranie."
+    echo "✅ Model 'mistral' już jest pobrany."
 fi
 
-echo "🎯 Uruchamiam Ollama w trybie pierwszoplanowym..."
-exec ollama serve  # Uruchamiamy Ollama na pierwszym planie
+echo "🚀 Uruchamiam serwer Ollama..."
+exec ollama serve  # Uruchamiamy Ollama w pierwszym planie
