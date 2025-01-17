@@ -1,11 +1,17 @@
 #!/bin/sh
-set -e  # Zatrzyma skrypt, jeśli coś pójdzie nie tak
+set -e  # Zatrzymuje skrypt w razie błędu
 
-# Pobierz model przed startem serwera
-ollama pull mistral || echo "Błąd pobierania modelu mistral"
+echo "🔍 Sprawdzam dostępne modele..."
+ollama list || echo "⚠️ Błąd: Nie można pobrać listy modeli"
 
-# Sprawdź, czy model jest poprawnie pobrany
-ollama list || echo "Błąd: Model nie jest dostępny"
+echo "⬇️ Pobieram model mistral..."
+until ollama pull mistral; do
+  echo "❌ Nie udało się pobrać modelu. Ponawiam próbę za 5 sekund..."
+  sleep 5
+done
 
-# Uruchom serwer Ollama
-ollama serve
+echo "✅ Model pobrany, oto lista dostępnych modeli:"
+ollama list
+
+echo "🚀 Uruchamiam serwer Ollama..."
+exec ollama serve
