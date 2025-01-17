@@ -5,4 +5,4 @@ FROM ollama/ollama
 EXPOSE 11434
 
 # Pobranie modelu przed startem serwera
-CMD ollama pull mistral && ollama serve
+CMD ["/bin/sh", "-c", "ollama pull mistral && ollama serve"]
