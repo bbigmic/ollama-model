@@ -1,5 +1,11 @@
 #!/bin/sh
-set -e  # Zatrzymuje skrypt w razie błędu
+set -e  # Zatrzymuje skrypt, jeśli coś pójdzie nie tak
+
+echo "🚀 Uruchamiam serwer Ollama w tle..."
+ollama serve &  # Startujemy serwer w tle
+
+echo "⏳ Czekam na uruchomienie Ollama..."
+sleep 5  # Czekamy chwilę, aby serwer się poprawnie uruchomił
 
 echo "🔍 Sprawdzam dostępne modele..."
 ollama list || echo "⚠️ Błąd: Nie można pobrać listy modeli"
@@ -13,5 +19,6 @@ done
 echo "✅ Model pobrany, oto lista dostępnych modeli:"
 ollama list
 
-echo "🚀 Uruchamiam serwer Ollama..."
-exec ollama serve
+echo "🎯 Restartuję serwer Ollama..."
+killall ollama  # Wyłączamy Ollama uruchomionego w tle
+exec ollama serve  # Restartujemy Ollama na pierwszym planie
