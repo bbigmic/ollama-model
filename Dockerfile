@@ -4,5 +4,10 @@ FROM ollama/ollama
 # Eksponowanie portu Ollama
 EXPOSE 11434
 
-# Pobranie modelu przed startem serwera i uruchomienie Ollama
-ENTRYPOINT ["sh", "-c", "ollama pull mistral && ollama serve"]
+# Skrypt startowy: najpierw uruchamiamy Ollama, potem pobieramy model
+ENTRYPOINT ["/bin/sh", "-c", "
+    ollama serve &  # Start serwera w tle
+    sleep 2         # Poczekaj, aż serwer się uruchomi
+    ollama pull mistral  # Pobierz model
+    wait -n         # Czekaj, aż którykolwiek proces się zakończy
+"]
