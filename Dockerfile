@@ -1,12 +1,18 @@
-# Pobranie oficjalnego obrazu Ollama
-FROM ollama/ollama
+# Pobieramy oficjalny obraz Ollama
+FROM ollama/ollama:latest
 
-# Skopiowanie skryptu startowego
+# Ustawiamy zmienną środowiskową, aby Ollama działał na wszystkich interfejsach
+ENV OLLAMA_HOST=0.0.0.0:11434
+
+# Pobieramy domyślny model (np. mistral)
+RUN ollama pull mistral
+
+# Kopiujemy plik startowy
 COPY start.sh /start.sh
 RUN chmod +x /start.sh
 
-# Eksponowanie portu Ollama
+# Otwieramy port do nasłuchiwania API
 EXPOSE 11434
 
-# Użycie skryptu startowego
-ENTRYPOINT ["/start.sh"]
+# Uruchamiamy startowy skrypt
+CMD ["/start.sh"]
