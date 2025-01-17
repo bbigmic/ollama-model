@@ -1,13 +1,12 @@
 # Pobranie oficjalnego obrazu Ollama
 FROM ollama/ollama
 
+# Skopiowanie skryptu startowego
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
 # Eksponowanie portu Ollama
 EXPOSE 11434
 
-# Skrypt startowy: najpierw uruchamiamy Ollama, potem pobieramy model
-ENTRYPOINT ["/bin/sh", "-c", "
-    ollama serve &  # Start serwera w tle
-    sleep 2         # Poczekaj, aż serwer się uruchomi
-    ollama pull mistral  # Pobierz model
-    wait -n         # Czekaj, aż którykolwiek proces się zakończy
-"]
+# Użycie skryptu startowego
+ENTRYPOINT ["/start.sh"]
